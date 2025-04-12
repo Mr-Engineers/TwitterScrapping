@@ -1,7 +1,7 @@
 import http.client
 import json
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 conn = http.client.HTTPSConnection("twitter-trends-by-location.p.rapidapi.com")
 
@@ -37,5 +37,5 @@ if poland_trends:
             "name": trend.get("name"),
             "post_count": trend.get("postCount"),
             "rank": trend.get("rank"),
-            "date": datetime.now().strftime("%Y-%m-%d")
+            "date": datetime.now()
         })
