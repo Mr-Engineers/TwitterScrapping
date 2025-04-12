@@ -27,12 +27,11 @@ else:
     print("Błąd w odpowiedzi:", json_data.get("message"))
 
 uri = "mongodb+srv://root:root@hacknarok.quwkjxf.mongodb.net/?retryWrites=true&w=majority&appName=Hacknarok"
+client = MongoClient(uri)
+db = client["Hacknarok"]
+collection = db["Twitter"]
 
 if poland_trends:
-    client = MongoClient(uri)
-    db = client["Hacknarok"]
-    collection = db["Twitter"]
-
     for trend in poland_trends:
         collection.insert_one({
             "name": trend.get("name"),
