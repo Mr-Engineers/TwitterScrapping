@@ -1,5 +1,7 @@
 import http.client
 import json
+from pymongo import MongoClient
+from datetime import datetime
 
 conn = http.client.HTTPSConnection("twitter-trends-by-location.p.rapidapi.com")
 
@@ -14,6 +16,7 @@ res = conn.getresponse()
 data = res.read()
 
 json_data = json.loads(data.decode("utf-8"))
+poland_trends = None
 
 if json_data.get("status") == "SUCCESS":
     trends = json_data.get("trending", {}).get("trends", [])
@@ -22,3 +25,18 @@ if json_data.get("status") == "SUCCESS":
     print(json.dumps(poland_trends, indent=2, ensure_ascii=False))
 else:
     print("Błąd w odpowiedzi:", json_data.get("message"))
+
+uri = "mongodb+srv://root:root@hacknarok.quwkjxf.mongodb.net/?retryWrites=true&w=majority&appName=Hacknarok"
+
+if poland_trends:
+    client = MongoClient(uri)
+    db = client["Hacknarok"]
+    collection = db["Twitter"]
+
+    for trend in poland_trends:
+        collection.insert_one({
+            "name": trend.get("name"),
+            "post_count": trend.get("postCount"),
+            "rank": trend.get("rank"),
+            "date": datetime.now().strftime("%Y-%m-%d")
+        })
